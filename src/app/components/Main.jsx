@@ -6,6 +6,16 @@ import { Router, Route } from "react-router-dom";
 import { history } from "../store/history";
 import { ConnectedNavigation } from "./Navigation";
 import { ConnectedTaskDetail } from "./TaskDetail";
+import { Redirect } from "react-router";
+import { ConnectedLogin } from "./Login";
+
+const RouteGuard = Component => ({ match }) => {
+    console.info("route guard", match);
+    if (!store.getState().session.authenticated) {
+        return <Redirect to="/"></Redirect>
+    }
+    return <Component match={match} />
+};
 
 export const Main = () => {
     return (
@@ -13,14 +23,17 @@ export const Main = () => {
             <Provider store={store}>
                 <div>
                     <ConnectedNavigation />
+                    <Route exact 
+                        path="/"
+                        component={ConnectedLogin}/>
                     <Route 
                         exact 
                         path="/dashboard"
-                        render={() => <ConnectedDashboard />} />
+                        render={RouteGuard(ConnectedDashboard)} />
                     <Route 
                         exact 
                         path="/task/:id" 
-                        render={({match}) => <ConnectedTaskDetail match={match} />} />
+                        render={RouteGuard(ConnectedTaskDetail)} />
                 </div>
             </Provider>
         </Router>

@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import axios from "axios";
 
 import * as mutations from "./mutations";
+import {history} from "./history";
 
 const url = "http://localhost:7777";
 
@@ -39,5 +40,24 @@ export function* taskModificationSaga() {
                 isComplete: task.isComplete
             }
         });
+    }
+}
+
+export function* userAthenticationSaga() {
+    while (true) {
+        const { username, password } = yield take(mutations.REQUEST_AUTHENTICATE_USER);
+        try {
+            const { data } = yield axios.post(`${url}/authenticate`, { username, password });
+            if (!data) {
+                throw new Error();
+            }
+            console.log("Authenticated", data);
+            yield put(mutations.setState(data.state));
+            yield put(mutations.processAuthenticateUser(mutations.AUTHENTICATED));
+            history.push("/dashboard");
+        } catch (e) {
+            console.log("Can't authenticate")
+            yield put(mutations.processAuthenticateUser(mutations.NOT_AUTHENTICATED))
+        }
     }
 }
