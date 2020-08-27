@@ -4,16 +4,16 @@ import * as mutations from "../store/mutations";
 
 export const LoginComponent = ({ authenticateUser, authenticated }) => {
     return (
-        <div>
+        <div className="card p-3 col-6">
             <h2>
                 Please Login
                 </h2>
             <form onSubmit={authenticateUser}>
-                <input type="text" placeholder="username" name="username" defaultValue="Dev" />
-                <input type="password" placeholder="password" name="password" defaultValue="" />
+                <input type="text" placeholder="username" name="username" defaultValue="Dev" className="form-control" />
+                <input type="password" placeholder="password" name="password" defaultValue="" className="form-control mt-2" />
                 {authenticated === mutations.NOT_AUTHENTICATED ?
                     <p>Login incorret</p> : null}
-                <button type="submit">Login</button>
+                <button className="form-control mt-2 btn btn-primary" type="submit">Login</button>
             </form>
         </div>
     )
